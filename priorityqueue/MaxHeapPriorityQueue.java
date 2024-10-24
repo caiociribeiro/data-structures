@@ -2,12 +2,12 @@ package ed.priorityqueue;
 
 @SuppressWarnings("unchecked")
 public class MaxHeapPriorityQueue<E extends Comparable<E>> {
-    private Object[] heap;
+    private E[] heap;
     private int size;
 
     public MaxHeapPriorityQueue(int capacity) {
-        heap = new Object[capacity + 1];
-        size = 0;
+        this.heap = (E[]) new Comparable[capacity + 1];
+        this.size = 0;
     }
 
     public boolean isEmpty() {
@@ -15,46 +15,11 @@ public class MaxHeapPriorityQueue<E extends Comparable<E>> {
     }
 
     public boolean isFull() {
-        return size == heap.length + 1;
+        return size == heap.length - 1;
     }
 
-    private void heapifyUp(int pos) {
-        if (pos == 1) return;
-
-        E current = (E) heap[pos];
-        E parent = (E) heap[pos / 2];
-
-        if (current.compareTo(parent) > 0) {
-            E aux = parent;
-            heap[pos / 2] = current;
-            heap[pos] = parent;
-
-            heapifyUp(pos / 2);
-        }
-    }
-
-    private void heapifyDown(int pos) {
-        int left = 2 * pos;
-        int right = 2 * pos + 1;
-
-        if (left <= size) {
-            E current = (E) heap[pos];
-            int highest = current.compareTo((E) heap[left]) > 0 ? pos : left;
-
-            if (right <= size) {
-                current = (E) heap[highest];
-                highest = current.compareTo((E) heap[right]) > 0 ? highest : right;
-            }
-
-            if (highest != pos) {
-                E aux = (E) heap[highest];
-                heap[highest] = heap[pos];
-                heap[pos] = aux;
-
-                heapifyDown(highest);
-            }
-        }
-
+    public int size() {
+        return size;
     }
 
     public void insert(E element) {
@@ -62,6 +27,8 @@ public class MaxHeapPriorityQueue<E extends Comparable<E>> {
             throw new IllegalStateException("Heap is full");
         }
 
+        // heap[size + 1] = element
+        // size++;
         heap[++size] = element;
 
         heapifyUp(size);
@@ -72,21 +39,66 @@ public class MaxHeapPriorityQueue<E extends Comparable<E>> {
             throw new IllegalStateException("Heap is empty");
         }
 
-        E r = (E) heap[1];
+        E r = heap[1];
 
         heap[1] = heap[size--];
+        heap[size + 1] = null;
 
         heapifyDown(1);
 
         return r;
     }
 
-    public String toString() {
-        StringBuilder str = new StringBuilder();
+    private void heapifyDown(int i) {
+        int left = i * 2;
+        int right = left + 1;
+
+        if (left <= size) {
+            int max = heap[i].compareTo(heap[left]) > 0 ? i : left;
+
+            if (right <= size) {
+                max = heap[max].compareTo(heap[right]) > 0 ? max : right;
+            }
+
+            if (max != i) {
+                E temp = heap[i];
+                heap[i] = heap[max];
+                heap[max] = temp;
+
+                heapifyDown(max);
+            }
+        }
+    }
+
+    private void heapifyUp(int i) {
+        if (i == 1) return;
+
+        if (heap[i].compareTo(heap[i / 2]) > 0) {
+            E temp = heap[i];
+            heap[i] = heap[i / 2];
+            heap[i / 2] = temp;
+
+            heapifyUp(i / 2);
+        }
+    }
+
+    public boolean contains(E element) {
         for (int i = 1; i <= size; i++) {
-            str.append(heap[i] + " ");
+            if (element.compareTo(heap[i]) == 0) {
+                return true;
+            }
         }
 
-        return str.toString();
+        return false;
+    }
+
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+
+        for (int i = 1; i <= size - 1; i++) {
+            str.append(heap[i]).append("\n");
+        }
+
+        return str.append(heap[size]).toString();
     }
 }
