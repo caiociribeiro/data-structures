@@ -1,12 +1,13 @@
 package ed.stack;
 
+@SuppressWarnings("unchecked")
 public class Stack<E extends Comparable<E>> {
 
-    private Object[] array;
+    private E[] array;
     private int size;
 
     public Stack(int capacity) {
-        this.array = new Object[capacity];
+        this.array = (E[]) new Comparable[capacity];
         this.size = 0;
     }
 
@@ -39,7 +40,7 @@ public class Stack<E extends Comparable<E>> {
             return null;
         }
 
-        E r = (E) array[size - 1];
+        E r = array[size - 1];
         this.size--;
 
         return r;
@@ -52,13 +53,13 @@ public class Stack<E extends Comparable<E>> {
             return null;
         }
 
-        return (E) array[size - 1];
+        return array[size - 1];
     }
 
-    public boolean contem(E elemento) {
+    public boolean contains(E element) {
 
         for (int i = 0; i < this.size; i++) {
-            if (array[i] == elemento) {
+            if (array[i] == element) {
                 return true;
             }
         }

@@ -2,22 +2,23 @@ package ed.queue;
 
 import java.util.NoSuchElementException;
 
+@SuppressWarnings("unchecked")
 public class Queue<E extends Comparable<E>> {
-    private Object[] queue;
+    private E[] queue;
     private int first;
     private int last;
     private int size;
     private final int DEFAULT_CAPACITY = 10;
 
     public Queue(int capacity) {
-        queue = new Object[capacity];
+        queue = (E[]) new Comparable[capacity];
         first = 0;
         last = 0;
         size = 0;
     }
 
     public Queue() {
-        queue = new Object[DEFAULT_CAPACITY];
+        queue = (E[]) new Comparable[DEFAULT_CAPACITY];
         first = 0;
         last = 0;
         size = 0;
@@ -34,7 +35,7 @@ public class Queue<E extends Comparable<E>> {
             newCapacity = minCapacity;
         }
 
-        Object[] newArray = new Object[newCapacity];
+        E[] newArray = (E[]) new Comparable[newCapacity];
         System.arraycopy(queue, 0, newArray, 0, first);
 
         for (int i = first + newArray.length - queue.length, j = first; i < newArray.length; i++, j++) {
@@ -67,7 +68,7 @@ public class Queue<E extends Comparable<E>> {
             throw new NoSuchElementException("Could not dequeue: List is empty");
         }
 
-        E d = (E) queue[first];
+        E d = queue[first];
 
         queue[first] = null;
 
@@ -83,7 +84,7 @@ public class Queue<E extends Comparable<E>> {
             throw new NoSuchElementException("Could not peek: List is empty");
         }
 
-        return (E) queue[first];
+        return queue[first];
     }
 
     public int indexOf(E value) {
@@ -105,14 +106,14 @@ public class Queue<E extends Comparable<E>> {
     }
 
     public void leave(E element) {
-       int index = indexOf(element);
-       if (index == -1) {
-           throw new NoSuchElementException("Could not leave: No such element");
-       }
-       for (int i = index; i < size - 1; i++) {
-           queue[i] = queue[i + 1];
-       }
-       size--;
+        int index = indexOf(element);
+        if (index == -1) {
+            throw new NoSuchElementException("Could not leave: No such element");
+        }
+        for (int i = index; i < size - 1; i++) {
+            queue[i] = queue[i + 1];
+        }
+        size--;
     }
 
     public String toString() {
